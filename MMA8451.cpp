@@ -119,7 +119,7 @@ bool MMA8451::writeRegister(uint8_t reg, uint8_t data) {
 
 float MMA8451::_readAxis(uint8_t reg) {
   char buf[2] = {0}; // Incoming data
-  
+
   _i2c->write(_i2cAddr, (char*)&reg, 1, true);
   _i2c->read(_i2cAddr, buf, 2, true);
 
@@ -133,7 +133,7 @@ float MMA8451::_readAxis(uint8_t reg) {
     div = 2048;
   else if(_sens == MMA8451_SENSITIVITY_8G)
     div = 1024;
-    
+
   return (static_cast<float>(axisData) / div);
 }
 

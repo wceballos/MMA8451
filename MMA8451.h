@@ -108,7 +108,7 @@
 #define MMA8451_CTRL_REG3          0x2C // Control Register 3: Wake Interrupts
 #define MMA8451_CTRL_REG4          0x2D // Control Register 4: Interrupt Enable
 #define MMA8451_CTRL_REG5          0x2E // Control Register 5: Interrupt Config
-#define MMA8451_OFF_X              0x2F  // X 8-bit Offset
+#define MMA8451_OFF_X              0x2F // X 8-bit Offset
 #define MMA8451_OFF_Y              0x30 // Y 8-bit Offset
 #define MMA8451_OFF_Z              0x31 // Z 8-bit Offset
 
@@ -189,7 +189,7 @@ public:
   /**
    * Reads the value of register WHO_AM_I
    * @returns 0x1A if read was successful. Undefined value if read fails.
-   */  
+   */
   uint8_t id();
 
   /**
