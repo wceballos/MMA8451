@@ -103,7 +103,7 @@ uint8_t MMA8451::id() {
 
 bool MMA8451::readRegister(uint8_t reg, uint8_t *data) {
   int status = _i2c->write(_i2cAddr, (char*)&reg, 1, true);
-  status |= _i2c->read(_i2cAddr, (char*)data, 1, true);
+  status |= _i2c->read(_i2cAddr, (char*)data, 1, false);
   if(status != 0)
     return false;
   return true;
@@ -111,7 +111,7 @@ bool MMA8451::readRegister(uint8_t reg, uint8_t *data) {
 
 bool MMA8451::writeRegister(uint8_t reg, uint8_t data) {
   char buf[2] = {reg, data};
-  int status = _i2c->write(_i2cAddr, buf, 2, true);
+  int status = _i2c->write(_i2cAddr, buf, 2, false);
   if(status != 0)
     return false;
   return true;
