@@ -46,10 +46,12 @@ bool MMA8451::init() {
 
   writeRegister(MMA8451_CTRL_REG2, 0x40); // Trigger soft reset
   // RST bit in CTRL_REG2 is deasserted when boot is finished
-  uint8_t content;
-  while(!readRegister(MMA8451_CTRL_REG2, &content) && (content & 0x40));
-  writeRegister(MMA8451_CTRL_REG1, 0x01); // Active mode
-  _sens = MMA8451_SENSITIVITY_2G;
+  uint8_t ctrlReg2 = 0;
+  do {
+    readRegister(MMA8451_CTRL_REG2, &ctrlReg2);
+  } while(ctrlReg2 & 0x40);
+  setActiveMode();
+  _sens = MMA8451_SENSITIVITY_2G; // This is the default after reset
 
   return true;
 }
@@ -136,28 +138,40 @@ float MMA8451::_readAxis(uint8_t reg) {
 }
 
 void MMA8451::setStandbyMode() {
-  uint8_t content = 0;
-  uint8_t mask = 0xFE;
-  if(readRegister(MMA8451_CTRL_REG1, &content))
-    writeRegister(MMA8451_CTRL_REG1, content & mask);
+  uint8_t ctrlReg1;
+  const uint8_t ACTIVE_MASK = 0x01;
+  readRegister(MMA8451_CTRL_REG1, &ctrlReg1);
+  writeRegister(MMA8451_CTRL_REG1, (ctrlReg1 & ~ACTIVE_MASK));
 }
 
 void MMA8451::setActiveMode() {
-  uint8_t content = 0;
-  uint8_t mask = 0x01;
-  if(readRegister(MMA8451_CTRL_REG1, &content))
-    writeRegister(MMA8451_CTRL_REG1, content | mask);
+  uint8_t ctrlReg1;
+  const uint8_t ACTIVE_MASK = 0x01;
+  readRegister(MMA8451_CTRL_REG1, &ctrlReg1);
+  writeRegister(MMA8451_CTRL_REG1, (ctrlReg1 | ACTIVE_MASK));
 }
 
 void MMA8451::setDataRate(mma8451_dataRate_t rate) {
-  uint8_t content = 0;
-  uint8_t mask = (static_cast<uint8_t>(rate) << 3) & 0x38;
-  if(readRegister(MMA8451_CTRL_REG1, &content))
-    writeRegister(MMA8451_CTRL_REG1, content | mask);
+  uint8_t ctrlReg1;
+  const uint8_t DR_MASK = 0x38;
+  uint8_t dataRate = static_cast<uint8_t>(rate) << 3;
+
+  setStandbyMode();
+  readRegister(MMA8451_CTRL_REG1, &ctrlReg1);
+  writeRegister(MMA8451_CTRL_REG1, (ctrlReg1 & ~DR_MASK));
+  writeRegister(MMA8451_CTRL_REG1, (ctrlReg1 | dataRate));
+  setActiveMode();
 }
 
 void MMA8451::setSensitivity(mma8451_sensitivity_t sens) {
-  writeRegister(MMA8451_XYZ_DATA_CFG, sens);
+  uint8_t dataCfgReg = 0;
+  const uint8_t FS_MASK = 0x03;
+
+  setStandbyMode();
+  readRegister(MMA8451_XYZ_DATA_CFG, &dataCfgReg);
+  writeRegister(MMA8451_XYZ_DATA_CFG, (dataCfgReg & ~FS_MASK));
+  writeRegister(MMA8451_XYZ_DATA_CFG, (dataCfgReg | sens));
+  setActiveMode();
   _sens = sens;
 }
 
