@@ -32,9 +32,7 @@
 MMA8451::MMA8451(I2C &i2c, uint8_t i2cAddr) {
   _i2c = &i2c;
   _i2cAddr = static_cast<uint8_t>(i2cAddr) << 1;
-
   _i2c->frequency(MMA8451_I2C_CLOCK);
-  init();
 }
 
 MMA8451::~MMA8451() {
