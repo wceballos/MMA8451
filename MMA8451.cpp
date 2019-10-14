@@ -2,7 +2,7 @@
  * @file      MMA8451.cpp
  * @brief     Driver for the MMA8451 3-axis Accelerometer
  * @author    Wilmin Ceballos (wceballos)
- * @version   1.0
+ * @version   1.1
  * @copyright MIT License
  *
  * Copyright (c) 2019 Wilmin Ceballos
